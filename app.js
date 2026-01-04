@@ -4,7 +4,7 @@ import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
-import rfs from "rotating-file-stream";
+import * as rfs from "rotating-file-stream";
 import { fileURLToPath } from "url";
 
 const app = express();
@@ -21,6 +21,7 @@ app.use(helmet()); // Set security-related HTTP headers
 const accessLogStream = rfs.createStream("access.log", {
   interval: "1d", // rotate log files daily
   size: "10M", // rotate every 10 MegaBytes written
+  path: path.resolve(__dirname, "log"),
 });
 
 app.use(morgan("combined", { stream: accessLogStream }));
