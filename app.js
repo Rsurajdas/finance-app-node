@@ -7,6 +7,8 @@ import path from "path";
 import * as rfs from "rotating-file-stream";
 import { fileURLToPath } from "url";
 
+import { validateApiKey } from "./middlewares/validateApiKey.js";
+
 const app = express();
 const __filename = fileURLToPath(import.meta.url); // Get the current file path
 const __dirname = path.dirname(__filename); // Get the current directory path
@@ -25,5 +27,6 @@ const accessLogStream = rfs.createStream("access.log", {
 });
 
 app.use(morgan("combined", { stream: accessLogStream }));
+app.use(validateApiKey);
 
 export default app;
