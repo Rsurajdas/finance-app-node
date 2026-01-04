@@ -1,0 +1,42 @@
+{
+  "name": "finance-app-node",
+  "version": "1.0.0",
+  "description": "Finance Application by SK",
+  "keywords": [
+    "finance-app"
+  ],
+  "homepage": "https://github.com/Rsurajdas/finance-app-node#readme",
+  "bugs": {
+    "url": "https://github.com/Rsurajdas/finance-app-node/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rsurajdas/finance-app-node.git"
+  },
+  "license": "ISC",
+  "author": "SK",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "compression": "^1.8.1",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.1.1",
+    "morgan": "^1.10.1",
+    "validator": "^13.15.26"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "eslint": "^9.39.2",
+    "eslint-plugin-perfectionist": "^5.2.0",
+    "globals": "^17.0.0",
+    "nodemon": "^3.1.11"
+  }
+}
