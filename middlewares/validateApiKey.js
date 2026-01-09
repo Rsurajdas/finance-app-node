@@ -1,14 +1,15 @@
-import AppError from "../utils/appError.js";
-import { catchAsync } from "../utils/catchAsync.js";
+import AppError from '../utils/appError.js';
+import { catchAsync } from '../utils/catchAsync.js';
 
-export const validateApiKey = catchAsync((req, res, next) => {
-  const apiKeyFromClient = req.header["x-api-key"];
+const validateApiKey = catchAsync(async (req, res, next) => {
+  const apiKeyFromClient = req.header('x-api-key');
+
   // eslint-disable-next-line no-undef
-  const validApiKey = process.env.API_KEY;
-
-  if (!apiKeyFromClient && apiKeyFromClient !== validApiKey) {
-    return next(AppError("Invalid or missing API key", 401));
+  if (!apiKeyFromClient || apiKeyFromClient !== process.env.API_KEY) {
+    return next(new AppError('Invalid or missing API key', 401));
   }
 
   next();
 });
+
+export default validateApiKey;
