@@ -5,19 +5,19 @@ import validator from 'validator';
 const userSchema = new Schema({
   fullName: {
     type: String,
-    require: [true, 'Please enter your username.'],
+    required: [true, 'Please enter your username.'],
     minLength: [3, 'Username must be at least 3 characters long.'],
   },
   email: {
     type: String,
-    require: [true, 'Please enter your email.'],
+    required: [true, 'Please enter your email.'],
     validate: [validator.isEmail, 'Please provide a valid email address.'],
     unique: true,
     lowercase: true,
   },
   password: {
     type: String,
-    require: [true, 'Please enter your password.'],
+    required: [true, 'Please enter your password.'],
     minLength: [8, 'Password must be at least 8 characters long.'],
     validate: [
       validator.isStrongPassword,
@@ -27,7 +27,7 @@ const userSchema = new Schema({
   },
   confirmPassword: {
     type: String,
-    require: [true, 'Please confirm your password'],
+    required: [true, 'Please confirm your password'],
     validate: {
       validator: function (el) {
         return el === this.password;
@@ -48,23 +48,28 @@ const userSchema = new Schema({
 
 userSchema.pre('save', async function () {
   // Only hash password, when password is modified or created new
-  if (!this.isModified('password')) return;
-  this.password = await bcrypt.hash(this.password, 12);
-  this.confirmPassword = undefined;
+  if (this.isModified('password')) {
+    this.password = await bcrypt.hash(this.password, 12);
+    this.confirmPassword = undefined;
+  }
+
+  if (this.isModified('password') && !this.isNew) {
+    this.passwordChangedAt = Date.now() - 1000;
+  }
 });
 
-userSchema.pre('save', function () {
-  if (!this.isModified('password') || this.isNew) return;
-  this.passwordChangedAt = Date.now() - 1000;
-});
+// userSchema.pre('save', function () {
+//   if (!this.isModified('password') || this.isNew) return;
+//   this.passwordChangedAt = Date.now() - 1000;
+// });
 
 userSchema.methods.correctPassword = async function (receivedPassword, storedPassword) {
-  return await bcrypt.compare(this.password, storedPassword);
+  return await bcrypt.compare(receivedPassword, storedPassword);
 };
 
 userSchema.methods.changePasswordAfter = function (jwtTimestamp) {
   if (this.passwordChangedAt) {
-    const changeTimeStamp = parseInt(this.passwordChangeAt.getTime() / 1000, 10);
+    const changeTimeStamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
     return jwtTimestamp < changeTimeStamp;
   }
   // False means password not changed
