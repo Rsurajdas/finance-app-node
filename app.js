@@ -10,6 +10,8 @@ import { fileURLToPath } from 'url';
 import globalErrorHandler from './controllers/errorController.js';
 import validateApiKey from './middlewares/validateApiKey.js';
 import { router as authRouter } from './routes/authRoute.js';
+import { router as budgetRouter } from './routes/budgetRoute.js';
+import { router as categoryRouter } from './routes/categoryRoute.js';
 import AppError from './utils/appError.js';
 
 const app = express();
@@ -33,6 +35,8 @@ app.use(morgan('combined', { stream: accessLogStream }));
 
 app.use(validateApiKey);
 app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/budgets', budgetRouter);
+app.use('/api/v1/categories', categoryRouter);
 
 app.use((req, res, next) => {
   next(new AppError(`Cannot find ${req.originalUrl} on this server!`, 404));
