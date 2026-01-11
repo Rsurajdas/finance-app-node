@@ -32,6 +32,11 @@ const BudgetSchema = new Schema(
       required: true,
       index: true,
     },
+    categoryId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Category',
+      required: true,
+    },
     isActive: {
       type: Boolean,
       default: true,
@@ -41,5 +46,4 @@ const BudgetSchema = new Schema(
 );
 
 const Budget = model('Budget', BudgetSchema);
-
 export default Budget;
