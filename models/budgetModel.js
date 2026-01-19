@@ -32,6 +32,20 @@ const BudgetSchema = new Schema(
       required: true,
       index: true,
     },
+    category: {
+      type: Schema.Types.ObjectId,
+      ref: 'Category',
+      required: [true, 'Please select a category'],
+      cast: [
+        null,
+        (value, path, model, kind) => {
+          if (!value) {
+            return 'Category Id should not be empty';
+          }
+          return `${value} is not a valid category Id`;
+        },
+      ],
+    },
     isActive: {
       type: Boolean,
       default: true,
@@ -41,5 +55,4 @@ const BudgetSchema = new Schema(
 );
 
 const Budget = model('Budget', BudgetSchema);
-
 export default Budget;

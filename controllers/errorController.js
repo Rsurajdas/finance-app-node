@@ -21,7 +21,7 @@ const handleValidationErrorDb = (error) => {
     return obj;
   }, {});
   const message = 'Invalid input data';
-  return new AppError(message, 400, errors);
+  return new AppError(message, error.statusCode, errors);
 };
 
 const handleJWTError = () => new AppError(`Invalid token. Please log in again!`, 401);
