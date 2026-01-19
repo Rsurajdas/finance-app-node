@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose';
 
-const BudgetSchema = new Schema(
+const budgetSchema = new Schema(
   {
     maxSpend: {
       type: Number,
@@ -46,6 +46,11 @@ const BudgetSchema = new Schema(
         },
       ],
     },
+    transactions: {
+      type: [Schema.Types.ObjectId],
+      ref: 'Transaction',
+      index: true,
+    },
     isActive: {
       type: Boolean,
       default: true,
@@ -54,5 +59,5 @@ const BudgetSchema = new Schema(
   { timestamps: true }
 );
 
-const Budget = model('Budget', BudgetSchema);
+const Budget = model('Budget', budgetSchema);
 export default Budget;

@@ -2,7 +2,7 @@ import AppError from '../utils/appError.js';
 
 const handleCastErrorDb = (error) => {
   const message = `Invalid ${error.path}: ${error.value}`;
-  return new AppError(message, 400);
+  return new AppError(message, error.statusCode);
 };
 
 const handleDuplicateFieldErrorDb = (error) => {
@@ -24,7 +24,8 @@ const handleValidationErrorDb = (error) => {
   return new AppError(message, error.statusCode, errors);
 };
 
-const handleJWTError = () => new AppError(`Invalid token. Please log in again!`, 401);
+const handleJWTError = () =>
+  new AppError(`Invalid token. Please log in again!`, 401);
 
 const handleJWTExpiredError = () =>
   new AppError(`Your token has expired! Please log in again!`, 401);
