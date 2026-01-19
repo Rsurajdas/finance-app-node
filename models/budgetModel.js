@@ -32,10 +32,19 @@ const BudgetSchema = new Schema(
       required: true,
       index: true,
     },
-    categoryId: {
+    category: {
       type: Schema.Types.ObjectId,
       ref: 'Category',
-      required: true,
+      required: [true, 'Please select a category'],
+      cast: [
+        null,
+        (value, path, model, kind) => {
+          if (!value) {
+            return 'Category Id should not be empty';
+          }
+          return `${value} is not a valid category Id`;
+        },
+      ],
     },
     isActive: {
       type: Boolean,
