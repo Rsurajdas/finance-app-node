@@ -90,6 +90,7 @@ export const getBudgets = catchAsync(async (req, res, next) => {
   const userId = req.user._id;
   const budgets = await Budget.find({ userId, isActive: true })
     .populate('category')
+    .populate('transactions')
     .select('-__v');
 
   res.status(200).json({

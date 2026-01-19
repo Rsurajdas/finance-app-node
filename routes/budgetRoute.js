@@ -8,8 +8,11 @@ import {
   updateBudget,
 } from '../controllers/budgetController.js';
 import protectedRoute from '../middlewares/protectedRoute.js';
+import { router as transactionRouter } from './transactionRoute.js';
 
 const router = express.Router();
+
+router.use('/:id/transactions', transactionRouter);
 
 router
   .route('/')
