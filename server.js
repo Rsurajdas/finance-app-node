@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
-import { createClient } from 'redis';
+// import { createClient } from 'redis';
 
 import app from './app.js';
 
