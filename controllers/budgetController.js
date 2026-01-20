@@ -20,9 +20,7 @@ export const createCategory = catchAsync(async (req, res, next) => {
 });
 
 export const createBulkCategories = catchAsync(async (req, res, next) => {
-  const userId = req.user._id;
-  const data = req.body.map((item) => ({ ...item, userId }));
-  const newCategories = await Category.insertMany([...data], {
+  const newCategories = await Category.insertMany(req.body, {
     ordered: true,
     runValidators: true,
   });
@@ -38,7 +36,11 @@ export const createBulkCategories = catchAsync(async (req, res, next) => {
 
 export const getCategories = catchAsync(async (req, res, next) => {
   const userId = req.user._id;
-  const categories = await Category.find({ userId }).select('-__v');
+  const categories = await Category.find({
+    $or: [{ type: 'system' }, { type: 'custom', userId }],
+  })
+    .select('-__v')
+    .sort({ name: 1 });
 
   res.status(200).json({
     status: 'success',
@@ -51,34 +53,39 @@ export const getCategories = catchAsync(async (req, res, next) => {
 
 export const updateCategory = catchAsync(async (req, res, next) => {
   const { id: categoryId } = req.params;
-  const updatedCategory = await Category.findByIdAndUpdate(
-    categoryId,
-    req.body,
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
-  if (!updatedCategory) {
+
+  const category = await Category.findById(categoryId);
+
+  if (!category) {
     return next(new AppError('No category found by this id', 404));
   }
+
+  if (category.type === 'system') {
+    return next(new AppError('System categories cannot be modified', 403));
+  }
+
+  await category.updateOne(req.body);
 
   res.status(200).json({
     status: 'success',
     message: 'Category updated successfully',
-    data: {
-      category: updatedCategory,
-    },
   });
 });
 
 export const deleteCategory = catchAsync(async (req, res, next) => {
   const { id: categoryId } = req.params;
-  const category = await Category.findByIdAndDelete(categoryId);
+
+  const category = await Category.findById(categoryId);
 
   if (!category) {
     return next(new AppError('No category found by this id', 404));
   }
+
+  if (category.type === 'system') {
+    return next(new AppError('System categories cannot be deleted', 403));
+  }
+
+  await category.deleteOne({ categoryId });
 
   res.status(200).json({
     status: 'success',
