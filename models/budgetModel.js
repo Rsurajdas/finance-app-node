@@ -6,6 +6,10 @@ const budgetSchema = new Schema(
       type: Number,
       required: [true, 'Please enter maximum spend'],
     },
+    spent: {
+      type: Number,
+      default: 0,
+    },
     theme: {
       type: String,
       enum: [
