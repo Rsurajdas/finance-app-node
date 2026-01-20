@@ -19,6 +19,23 @@ export const createCategory = catchAsync(async (req, res, next) => {
   });
 });
 
+export const createBulkCategories = catchAsync(async (req, res, next) => {
+  const userId = req.user._id;
+  const data = req.body.map((item) => ({ ...item, userId }));
+  const newCategories = await Category.insertMany([...data], {
+    ordered: true,
+    runValidators: true,
+  });
+
+  res.status(201).json({
+    status: 'success',
+    results: newCategories.length,
+    data: {
+      categories: newCategories,
+    },
+  });
+});
+
 export const getCategories = catchAsync(async (req, res, next) => {
   const userId = req.user._id;
   const categories = await Category.find({ userId }).select('-__v');
@@ -82,6 +99,24 @@ export const createBudget = catchAsync(async (req, res, next) => {
     message: 'Budget created successfully',
     data: {
       budget: newBudget,
+    },
+  });
+});
+
+export const createBulkBudgets = catchAsync(async (req, res, next) => {
+  const userId = req.user._id;
+  const data = req.body.map((item) => ({ ...item, userId }));
+
+  const newBudgets = await Budget.insertMany(data, {
+    ordered: true,
+    runValidator: true,
+  });
+
+  res.status(200).json({
+    status: 'success',
+    results: newBudgets.length,
+    data: {
+      budgets: newBudgets,
     },
   });
 });

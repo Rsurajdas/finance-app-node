@@ -2,6 +2,7 @@ import express from 'express';
 
 import {
   createBudget,
+  createBulkBudgets,
   deleteBudget,
   getBudgetById,
   getBudgets,
@@ -18,6 +19,7 @@ router
   .route('/')
   .post(protectedRoute, createBudget)
   .get(protectedRoute, getBudgets);
+router.route('/bulk').post(protectedRoute, createBulkBudgets);
 router
   .route('/:id')
   .get(protectedRoute, getBudgetById)
