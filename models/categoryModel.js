@@ -6,25 +6,37 @@ const categorySchema = new Schema({
     type: String,
     required: [true, 'Category name is required'],
     minlength: [3, 'Name should be at least 3 characters'],
-    unique: true,
     trim: true,
   },
   slug: {
     type: String,
-    unique: true,
     index: true,
   },
   description: {
     type: String,
     trim: true,
   },
+  type: {
+    type: String,
+    enum: ['system', 'custom'],
+    required: [true, 'Category type is required'],
+    default: 'custom',
+    index: true,
+  },
   userId: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
+    required: function () {
+      return this.type === 'custom';
+    },
     index: true,
   },
 });
+
+categorySchema.index(
+  { name: 1, userId: 1 },
+  { unique: true, collation: { locale: 'en', strength: 2 } }
+);
 
 categorySchema.pre('save', function () {
   if (this.isModified('name')) {
