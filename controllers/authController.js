@@ -4,16 +4,16 @@ import User from '../models/userModel.js';
 import AppError from '../utils/appError.js';
 import { catchAsync } from '../utils/catchAsync.js';
 
-const signToken = (id) => {
+const signToken = (id, tokenVersion) => {
   // eslint-disable-next-line no-undef
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+  return jwt.sign({ id, tokenVersion }, process.env.JWT_SECRET, {
     // eslint-disable-next-line no-undef
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
 
 const createSendToken = (user, statusCode, res) => {
-  const token = signToken(user.id);
+  const token = signToken(user.id, user.tokenVersion);
   const options = {
     expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
   };
@@ -44,6 +44,10 @@ export const login = catchAsync(async (req, res, next) => {
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError('Please provide valid email or password', 401));
   }
+
+  user.tokenVersion += 1;
+
+  await user.save();
 
   createSendToken(user, 200, res);
 });

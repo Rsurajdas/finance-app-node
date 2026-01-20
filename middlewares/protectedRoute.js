@@ -8,12 +8,17 @@ import { catchAsync } from '../utils/catchAsync.js';
 const protectedRoute = catchAsync(async (req, res, next) => {
   let token;
 
-  if (req.headers.authorization || req.headers.authorization.startsWith('Bearer ')) {
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer ')
+  ) {
     token = req.headers.authorization.split(' ')[1];
   }
 
   if (!token) {
-    return next(new AppError('You are not logged in! Please log in to get access', 401));
+    return next(
+      new AppError('You are not logged in! Please log in to get access', 401)
+    );
   }
 
   // eslint-disable-next-line no-undef
@@ -22,11 +27,21 @@ const protectedRoute = catchAsync(async (req, res, next) => {
   const user = await User.findById(decoded.id);
 
   if (!user) {
-    return next(new AppError('The user belonging to this token does no longer exist', 401));
+    return next(
+      new AppError('The user belonging to this token does no longer exist', 401)
+    );
+  }
+
+  if (decoded.tokenVersion !== user.tokenVersion) {
+    return next(
+      new AppError('Your session has expired. Please log in again.', 401)
+    );
   }
 
   if (user.changePasswordAfter(decoded.iat)) {
-    return next(new AppError('User recently changed password, Please login again!'));
+    return next(
+      new AppError('User recently changed password, Please login again!')
+    );
   }
 
   req.user = user;
