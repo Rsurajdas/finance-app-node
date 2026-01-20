@@ -44,6 +44,10 @@ const userSchema = new Schema({
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetTokenExpires: Date,
+  tokenVersion: {
+    type: Number,
+    default: 0,
+  },
 });
 
 userSchema.pre('save', async function () {
@@ -63,13 +67,19 @@ userSchema.pre('save', async function () {
 //   this.passwordChangedAt = Date.now() - 1000;
 // });
 
-userSchema.methods.correctPassword = async function (receivedPassword, storedPassword) {
+userSchema.methods.correctPassword = async function (
+  receivedPassword,
+  storedPassword
+) {
   return await bcrypt.compare(receivedPassword, storedPassword);
 };
 
 userSchema.methods.changePasswordAfter = function (jwtTimestamp) {
   if (this.passwordChangedAt) {
-    const changeTimeStamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
+    const changeTimeStamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    );
     return jwtTimestamp < changeTimeStamp;
   }
   // False means password not changed
