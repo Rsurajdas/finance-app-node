@@ -47,7 +47,7 @@ export const login = catchAsync(async (req, res, next) => {
 
   user.tokenVersion += 1;
 
-  await user.save();
+  await user.save({ validateBeforeSave: false });
 
   createSendToken(user, 200, res);
 });
