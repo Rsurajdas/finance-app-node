@@ -1,4 +1,5 @@
 import compression from 'compression';
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
@@ -24,6 +25,7 @@ app.use(express.urlencoded({ extended: true })); // Parse URL-encoded request bo
 app.use(compression()); // Enable response compression
 app.use(cors()); // Enable CORS
 app.use(helmet()); // Set security-related HTTP headers
+app.use(cookieParser());
 
 const accessLogStream = rfs.createStream('access.log', {
   interval: '1d', // rotate log files daily
