@@ -101,3 +101,4 @@
 ::1 - - [19/Jan/2026:11:05:21 +0000] "POST /api/v1/budgets/696e05a1f2c877f6e76328ca/transactions HTTP/1.1" 201 343 "-" "PostmanRuntime/7.51.0"
 ::1 - - [19/Jan/2026:11:05:26 +0000] "GET /api/v1/budgets/696e05a1f2c877f6e76328ca/transactions HTTP/1.1" 200 829 "-" "PostmanRuntime/7.51.0"
 ::1 - - [19/Jan/2026:11:05:35 +0000] "GET /api/v1/budgets HTTP/1.1" 200 - "-" "PostmanRuntime/7.51.0"
+::1 - - [22/Feb/2026:03:35:18 +0000] "POST /api/v1/auth/login HTTP/1.1" 200 368 "-" "PostmanRuntime/7.51.1"
