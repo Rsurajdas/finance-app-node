@@ -10,6 +10,8 @@ import {
 } from '../controllers/budgetController.js';
 import protectedRoute from '../middlewares/protectedRoute.js';
 import { router as transactionRouter } from './transactionRoute.js';
+import cache from '../middlewares/cache.js';
+import { budgetkey } from '../utils/redisKey.js';
 
 const router = express.Router();
 
@@ -22,7 +24,7 @@ router
 router.route('/bulk').post(protectedRoute, createBulkBudgets);
 router
   .route('/:id')
-  .get(protectedRoute, getBudgetById)
+  .get(protectedRoute, cache((req) => budgetkey(req.params.id), 60 * 10), getBudgetById)
   .patch(protectedRoute, updateBudget)
   .delete(protectedRoute, deleteBudget);
 

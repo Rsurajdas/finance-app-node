@@ -152,7 +152,7 @@ export const getBudgetById = catchAsync(async (req, res, next) => {
   const budget = await Budget.findOne({
     userId,
     _id: budgetId,
-  }).populate("transactions");
+  }).populate("transactions").lean();
 
   if (!budget) {
     return next(new AppError('No budget with this id', 404));
