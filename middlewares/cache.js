@@ -8,7 +8,6 @@ const cache = (keyGenerator, ttl = 60) => catchAsync(async (req, res, next) => {
 
     if (cachedData) {
         try {
-            console.log("Cache hit")
             return res.status(200).json(deserialize(cachedData))
         } catch (err) {
             await redisClient.del(key);

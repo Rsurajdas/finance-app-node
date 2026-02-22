@@ -1,8 +1,9 @@
+import redisClient from '../config/redisClient.js';
 import Budget from '../models/budgetModel.js';
 import Category from '../models/categoryModel.js';
 import AppError from '../utils/appError.js';
 import { catchAsync } from '../utils/catchAsync.js';
-import { deserialize, serialize } from '../utils/redisSerializer.js';
+import { budgetkey } from '../utils/redisKey.js';
 
 export const createCategory = catchAsync(async (req, res, next) => {
   const userId = req.user._id;
@@ -134,7 +135,7 @@ export const getBudgets = catchAsync(async (req, res, next) => {
   const budgets = await Budget.find({ userId, isActive: true })
     .populate('category')
     .populate('transactions')
-    .select('-__v');
+    .select('-__v').lean();
 
   res.status(200).json({
     status: 'success',
@@ -196,6 +197,9 @@ export const deleteBudget = catchAsync(async (req, res, next) => {
   const { id: budgetId } = req.params;
 
   await Budget.findOneAndDelete({ userId, _id: budgetId, isActive: true });
+
+  await redisClient.del(budgetkey(budgetId))
+  await redisClient.del(budgetkey("all"))
 
   res.status(200).json({
     status: 'success',

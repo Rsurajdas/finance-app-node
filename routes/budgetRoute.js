@@ -20,11 +20,11 @@ router.use('/:id/transactions', transactionRouter);
 router
   .route('/')
   .post(protectedRoute, createBudget)
-  .get(protectedRoute, getBudgets);
+  .get(protectedRoute, cache(() => budgetkey("all"), 60 * 60), getBudgets);
 router.route('/bulk').post(protectedRoute, createBulkBudgets);
 router
   .route('/:id')
-  .get(protectedRoute, cache((req) => budgetkey(req.params.id), 60 * 10), getBudgetById)
+  .get(protectedRoute, cache((req) => budgetkey(req.params.id), 60 * 60), getBudgetById)
   .patch(protectedRoute, updateBudget)
   .delete(protectedRoute, deleteBudget);
 
