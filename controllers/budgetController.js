@@ -2,6 +2,7 @@ import Budget from '../models/budgetModel.js';
 import Category from '../models/categoryModel.js';
 import AppError from '../utils/appError.js';
 import { catchAsync } from '../utils/catchAsync.js';
+import { deserialize, serialize } from '../utils/redisSerializer.js';
 
 export const createCategory = catchAsync(async (req, res, next) => {
   const userId = req.user._id;
@@ -151,7 +152,7 @@ export const getBudgetById = catchAsync(async (req, res, next) => {
   const budget = await Budget.findOne({
     userId,
     _id: budgetId,
-  });
+  }).populate("transactions");
 
   if (!budget) {
     return next(new AppError('No budget with this id', 404));
